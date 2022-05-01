@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import 'antd/dist/antd.css';
 import { Form, Input, InputNumber, Button, Checkbox, Upload, message } from 'antd';
 import { UserOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import { UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+
+import { UserDataContext } from '../Helpers/Contexts';
+
+const userDataRead = {}
 
 const props = {
   username: '',
@@ -33,7 +37,7 @@ const props = {
       //message.success(e.target.result);
       message.success(e.target.result)
       const bank = e.target.result.split('\n');
-      for(let s = 0; s < bank.length; s++) {
+      for (let s = 0; s < bank.length; s++) {
         message.success(bank[s]);
         console.log(bank[s]);
       }
@@ -50,6 +54,8 @@ function onChange(value) {
 }
 
 const QuizForm = () => {
+  const { userData, setUserData } = useState(userDataRead)
+
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
   };
@@ -117,7 +123,7 @@ const QuizForm = () => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-form-button"
-          onClick={() => routeChange("/quiz")}>
+            onClick={() => routeChange("/quiz")}>
             Start Quiz
           </Button>
         </Form.Item>

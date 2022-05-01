@@ -1,19 +1,35 @@
-import React, { useContext, useState } from 'react';
-import { QuizContext } from "../Helpers/Contexts"
-import "../App.css"
+import React, { useState } from 'react';
 
-function QuizMainMenu() {
+import Quiz from './Quiz';
+import EndScreen from './EndScreen';
+import QuizMainMenu from './QuizMainMenu'
+
+import { QuizContext } from "../Helpers/Contexts"
+
+function QuizPrompt() {
     /* Global State */
-    const { gameState, setGameState } = useContext(QuizContext);
+    const [gameState, setGameState] = useState("menu");
+    const [score, setScore] = useState(0);
 
     return (
-        <div className='flex Menu'>
-            <button onClick={() => { setGameState("quiz") }}>Start Quiz</button>
+        <div className='App flex'>
+            <h1>File uploaded. (QuizPrompt/))  Begin quiz now!)</h1>
+            <p1> Timer Runs Here </p1>
+
+
+            {/* The following provided state can be accessed in the components inside QuizContext */}
+
+            <QuizContext.Provider value={{ gameState, setGameState, score, setScore }}>
+                {gameState == "menu" && <QuizMainMenu />}
+                {gameState == "quiz" && <Quiz />}
+                {gameState == "endScreen" && <EndScreen />}
+            </QuizContext.Provider>
+
         </div>
     )
 }
 
-export default QuizMainMenu;
+export default QuizPrompt;
 
 
 

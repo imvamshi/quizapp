@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Route, Routes, Switch, Link } from 'react-rout
 import QuizForm from './components/QuizForm';
 import LogForm from './components/LogForm';
 import QuizMainMenu from './components/QuizMainMenu';
+import QuizPrompt from './components/QuizPrompt';
 
 
 const RoutingConfig = () => (
@@ -19,7 +20,7 @@ const RoutingConfig = () => (
       <Routes>
         <Route exact path="/" element={<QuizForm/>} />
         <Route path="/log" element={<LogForm/>} />
-        <Route path="/quiz" element={<QuizMainMenu/>} />
+        <Route path="/quiz" element={<QuizPrompt/>} />
       </Routes>
     </Router>
 );
