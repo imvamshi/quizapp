@@ -10,6 +10,7 @@ function QuizPrompt() {
     /* Global State */
     const [gameState, setGameState] = useState("menu");
     const [score, setScore] = useState(0);
+    const [timer, setTimer] = useState(0);
 
     return (
         <div className='App flex'>
@@ -19,7 +20,7 @@ function QuizPrompt() {
 
             {/* The following provided state can be accessed in the components inside QuizContext */}
 
-            <QuizContext.Provider value={{ gameState, setGameState, score, setScore }}>
+            <QuizContext.Provider value={{ gameState, setGameState, score, setScore, timer, setTimer }}>
                 {gameState == "menu" && <QuizMainMenu />}
                 {gameState == "quiz" && <Quiz />}
                 {gameState == "endScreen" && <EndScreen />}

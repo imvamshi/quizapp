@@ -1,14 +1,33 @@
 import React, { useContext, useState } from 'react';
+// import { Statistic, Row, Col } from 'antd';
 import { QuizContext } from "../Helpers/Contexts"
 import "../App.css"
 
 function QuizMainMenu() {
     /* Global State */
-    const { gameState, setGameState } = useContext(QuizContext);
+    const { gameState, setGameState, timer, setTimer } = useContext(QuizContext);
+    // const { Countdown } = Statistic;
+
+    // const onFinish = () => {
+    //     console.log("Timer finished! in <Quiz />");
+    //     setGameState("endScreen");
+    // }
+
+    const startButtonOnClick = () => {
+        setTimer(Date.now() + timer*1000);
+        setGameState("quiz");
+    }
 
     return (
         <div className='flex Menu'>
-            <button onClick={() => { setGameState("quiz") }}>Start Quiz</button>
+            {/* <div className='flex'>
+                <Row gutter={0}>
+                    <Col span={20}>
+                        <Countdown title="Time left" value={Date.now() + timer * 1000} onFinish={onFinish} />
+                    </Col>
+                </Row>
+            </div> */}
+            <button onClick={startButtonOnClick}>Start Quiz</button>
         </div>
     )
 }

@@ -1,14 +1,20 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { QuizContext } from '../Helpers/Contexts';
 import { Questions } from "../Helpers/QuestionBank";
 import { Statistic, Row, Col } from 'antd';
 
 function Quiz() {
-
-    const { score, setScore, setGameState } = useContext(QuizContext);
+    const { score, setScore, setGameState, timer, setTimer } = useContext(QuizContext);
 
     const [currQuestion, setCurrQuestion] = useState(0);
     const [optionSelected, setOptionSelected] = useState("");
+
+    useEffect(() => {
+        // setTimer(timer);
+        console.log(`loaded <Quiz /> component. Timer is set for ${(timer - Date.now())/1000} secs.`);
+    });
+
+    
 
     const chooseOption = (option) => {
         console.log(`Clicked button ${option}`);
@@ -53,6 +59,7 @@ function Quiz() {
     const { Countdown } = Statistic;
     const deadline = Date.now() + 1000 * 5; // Moment is also OK
     const onFinish = () => {
+        console.log("Timer finished! in <Quiz />");
         setGameState("endScreen");
     }
 
@@ -62,7 +69,7 @@ function Quiz() {
             <div className='flex'>
                 <Row gutter={0}>
                     <Col span={20}>
-                        <Countdown title="Time left" value={deadline} onFinish={onFinish} />
+                        <Countdown title="Time left" value={Date.now() + timer*1000} onFinish={onFinish} />
                     </Col>
                 </Row>
             </div>

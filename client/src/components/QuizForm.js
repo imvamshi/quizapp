@@ -56,14 +56,18 @@ function onChange(value) {
 const QuizForm = () => {
   const { userData, setUserData } = useState(userDataRead)
 
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-  };
   const navigate = useNavigate();
+
   const routeChange = (path) => {
     message.success(`reached path ${path}`)
     navigate(path);
   }
+
+  const onFinish = (values) => {
+    console.log('Received values of form: ', values);
+    routeChange("/quiz");
+  };
+
 
   return (
     <div className="App flex">
@@ -123,12 +127,13 @@ const QuizForm = () => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-form-button"
-            onClick={() => routeChange("/quiz")}>
+            onClick={() => onFinish()}>
             Start Quiz
           </Button>
         </Form.Item>
 
         <Button type="primary" className="login-form-button"
+
           onClick={() => routeChange("/log")}>
           Get Log File
         </Button>
