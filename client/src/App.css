@@ -35,6 +35,14 @@
   color: white;
 } */
 
+.button, .selected {
+  background-color: rgb(189, 233, 211) !important;
+  border: 2px solid rgb(0, 0, 255);
+}
+.timer {
+  font-family: monospace;
+}
+
 .button:hover {
   cursor: pointer;
 }

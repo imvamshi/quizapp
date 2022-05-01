@@ -4,57 +4,67 @@ import { Form, Input, InputNumber, Button, Checkbox, Upload, message } from 'ant
 import { UserOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import { UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { GetFileContents } from '../services/quizFileService';
 
-import { UserDataContext } from '../Helpers/Contexts';
 
-const userDataRead = {}
+const QuizForm = (props) => {
 
-const props = {
-  username: '',
-  timer: '',
+  // const { userData, setUserData } = useState(userDataRead)
 
-  name: 'file',
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  headers: {
-    authorization: 'authorization-text',
-  },
-  onChange(info) {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`);
-      console.log(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  beforeUpload: (file) => {
-    const reader = new FileReader();
+  const { quizData, setQuizData } = props;
 
-    reader.onload = e => {
-      console.log(typeof e.target.result);
-      //message.success(e.target.result);
-      message.success(e.target.result)
-      const bank = e.target.result.split('\n');
-      for (let s = 0; s < bank.length; s++) {
-        message.success(bank[s]);
-        console.log(bank[s]);
-      }
-    };
-    reader.readAsText(file);
-    console.log(reader);
-    // Prevent upload
-    return false;
+  const onChange = (value) => {
+    setQuizData({...quizData, 'timer': value});
+    console.log('changed quiz timer', value);
   }
-};
+  const onChangeNoOfQuestions = (value) => {
+    setQuizData({...quizData, 'noq': value});
+    console.log('changed Question count', value);
+    console.log(`quizData after incrementing Question count ${JSON.stringify(quizData)}`);
 
-function onChange(value) {
-  console.log('changed', value);
-}
+  }
+  const uploadProps = {
+    username: '',
+    timer: '',
 
-const QuizForm = () => {
-  const { userData, setUserData } = useState(userDataRead)
+    name: 'file',
+    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    headers: {
+      authorization: 'authorization-text',
+    },
+    onChange(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully`);
+        console.log(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    beforeUpload: (file) => {
+      const reader = new FileReader();
+
+      reader.onload = e => {
+        // message.success(e.target.result)
+        // const bank = e.target.result.split('\n');
+        // for (let s = 0; s < bank.length; s++) {
+        //   console.log(bank[s]);
+        // }
+
+        const qbank = GetFileContents(e.target.result);
+        setQuizData({ ...quizData, qbank });
+        message.success("Uploaded");
+        console.log(`quizData after file upload = ${JSON.stringify(quizData)}`);
+        console.log(`qbank after file upload = ${JSON.stringify(qbank)}`);
+      };
+      reader.readAsText(file);
+      console.log(reader);
+      // Prevent upload
+      return false;
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -62,6 +72,8 @@ const QuizForm = () => {
     message.success(`reached path ${path}`)
     navigate(path);
   }
+
+
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
@@ -107,15 +119,39 @@ const QuizForm = () => {
           <InputNumber
             min={1}
             max={1000}
-            defaultValue={40}
+            
             onChange={onChange}
             addonAfter="Timer (Seconds)"
             className="login-form-button" />
 
         </Form.Item>
 
+        <Form.Item
+          name="noq"
+          rules={[
+            {
+              required: true,
+              message: 'No. of questions',
+            },
+          ]}
+        >
+          {/* <Input
+          prefix={<FieldTimeOutlined className="site-form-item-icon" />}
+          type="text"
+          placeholder="Timer"
+        /> */}
+          <InputNumber
+            min={1}
+            max={1000}
+            defaultValue={1}
+            onChange={onChangeNoOfQuestions}
+            addonAfter="No. of questions"
+            className="login-form-button" />
+
+        </Form.Item>
+
         <Form.Item>
-          <Upload {...props} >
+          <Upload {...uploadProps} >
             <Button
               icon={<UploadOutlined />}
               className="upload-button"

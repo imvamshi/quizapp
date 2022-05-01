@@ -5,25 +5,33 @@ import EndScreen from './EndScreen';
 import QuizMainMenu from './QuizMainMenu'
 
 import { QuizContext } from "../Helpers/Contexts"
+import QuizForm from './QuizForm';
 
-function QuizPrompt() {
+function QuizPrompt(props) {
     /* Global State */
+    const { quizData, setQuizData } = props;
     const [gameState, setGameState] = useState("menu");
     const [score, setScore] = useState(0);
     const [timer, setTimer] = useState(0);
+    const [currQuestion, setCurrQuestion] = useState(0);
 
+    console.log(`QuizData in QuizPrompt ${JSON.stringify(quizData)}`);
     return (
         <div className='App flex'>
-            <h1>File uploaded. (QuizPrompt/))  Begin quiz now!)</h1>
-            <p1> Timer Runs Here </p1>
+            <h1>Play Quiz Pro</h1>
+            
+            {/* <p2> No. of questions are {quizData.qbank.question.length}</p2> */}
 
 
             {/* The following provided state can be accessed in the components inside QuizContext */}
 
-            <QuizContext.Provider value={{ gameState, setGameState, score, setScore, timer, setTimer }}>
+            <QuizContext.Provider value={{ gameState, 
+                setGameState, score, setScore, timer, setTimer, quizData,
+                currQuestion, setCurrQuestion }}>
                 {gameState == "menu" && <QuizMainMenu />}
                 {gameState == "quiz" && <Quiz />}
                 {gameState == "endScreen" && <EndScreen />}
+                {gameState == "home" && <QuizForm />}
             </QuizContext.Provider>
 
         </div>

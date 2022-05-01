@@ -1,3 +1,159 @@
+import React, { useState, useContext, useEffect } from "react";
+import { QuizContext } from "../Helpers/Contexts";
+import { Questions } from "../Helpers/QuestionBank";
+import { Statistic, Row, Col } from "antd";
+
+const Options = (props) => {
+    const { Questions, chooseOption, optionSelected, currQuestion, quizData } = props;
+    // const array = Questions[currQuestion].options;
+    const array = quizData.qbank.options[currQuestion];
+    // console.log(`"Quiz Data = ${JSON.stringify(quizData)}`);
+    return (
+        <>
+            {array.map((option, number) => {
+                // here you return the new array created by map
+                console.log(
+                    `Number is ${number}, Option is ${option}, chooseOption(${number})`
+                );
+                console.log(`op selected = ${optionSelected}, option = ${option}`);
+                return (
+                    <button
+                        className={optionSelected === `${number + 1}` ? "button selected" : "button"}
+                        onClick={() => chooseOption(`${number + 1}`)}
+                    >
+                        {option}
+                    </button>
+                );
+            })}
+        </>
+    );
+};
+
+function Quiz() {
+    const { score, setScore, setGameState, timer, setTimer, quizData } =
+        useContext(QuizContext);
+
+    const [currQuestion, setCurrQuestion] = useState(0);
+    const [optionSelected, setOptionSelected] = useState("");
+
+    // useEffect(() => {
+    //     // setTimer(timer);
+    //     console.log(
+    //         `loaded <Quiz /> component. Timer is set for ${(timer - Date.now()) / 1000
+    //         } secs.`
+    //     );
+    // });
+
+    const chooseOption = (option) => {
+        console.log(`Clicked button ${option}`);
+        setOptionSelected(option);
+    };
+
+    const checkAnswerAndIncrementScore = () => {
+        if (optionSelected == quizData.qbank.answer[currQuestion]) {
+            setScore(score + 1);
+        }
+    }
+
+    const nextQuestion = () => {
+        console.log(
+            `Option selected = ${optionSelected} \n Correct Answer = ${Questions[currQuestion].answer}`
+        );
+        // console.log(`optionSelected == Questions[currQuestion].answer -> ${optionSelected == Questions[currQuestion].answer}`);
+
+        checkAnswerAndIncrementScore();
+        // alert(score);
+        if (currQuestion == quizData.qbank.question.length - 1) {
+            // show results button
+        }
+        setCurrQuestion(currQuestion + 1);
+    };
+
+    const finishQuiz = () => {
+        checkAnswerAndIncrementScore();
+        setGameState("endScreen");
+    };
+
+    const { Countdown } = Statistic;
+    const deadline = Date.now() + 1000 * 5; // Moment is also OK
+
+    const onFinish = () => {
+        console.log("Timer finished! in <Quiz />");
+        setGameState("endScreen");
+    };
+
+    const getTimerValue = () => {
+        return Date.now() + quizData.timer * 1000
+    }
+
+    const timerValue = Date.now() + quizData.timer * 1000;
+
+    /* Dynamic */
+    const initialMinute = Math.floor(quizData.timer / 60);
+    const initialSeconds = quizData.timer - initialMinute * 60;
+
+    /* Static */
+    // const initialMinute = 0;
+    // const initialSeconds = 20;
+
+    const [minutes, setMinutes] = useState(initialMinute);
+    const [seconds, setSeconds] = useState(initialSeconds);
+
+    useEffect(() => {
+        let myInterval = setInterval(() => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }
+            if (seconds === 0) {
+                if (minutes === 0) {
+                    clearInterval(myInterval);
+                    onFinish();
+                } else {
+                    setMinutes(minutes - 1);
+                    setSeconds(59);
+                }
+            }
+            // if (seconds === 0) {
+            //     clearInterval(myInterval);
+            //     onFinish();
+            // }
+        }, 1000)
+        return () => {
+            clearInterval(myInterval);
+        };
+    });
+
+    return (
+        <div className="Quiz flex">
+            {/* <p>Question Answers | In (Quiz/) component</p> */}
+            <div className="flex">
+                <Row gutter={0}>
+                    <Col span={30}>
+                        {/* <Countdown
+                            title="Time left"
+                            value={timerValue}
+                            onFinish={onFinish}
+                        /> */}
+                        <p className="flex heading timer ">{minutes} : {seconds}</p>
+                    </Col>
+                </Row>
+            </div>
+            <h2 className="heading">{quizData.qbank.question[currQuestion]}</h2>
+            <div className="options flex">
+                <Options {...{ Questions, chooseOption, optionSelected, currQuestion, quizData }} />
+            </div>
+            {currQuestion == quizData.qbank.question.length - 1 ? (
+                <button onClick={finishQuiz}>Finish Quiz</button>
+            ) : (
+                <button onClick={nextQuestion}>Next Question</button>
+            )}
+        </div>
+    );
+}
+
+export default Quiz;
+
+/*
 import React, { useState, useContext, useEffect } from 'react';
 import { QuizContext } from '../Helpers/Contexts';
 import { Questions } from "../Helpers/QuestionBank";
@@ -30,7 +186,7 @@ function Quiz() {
         const buttonGroup = array.map((option, number) => { // here you return the new array created by map
             number = number + 1;
             console.log(`Number is ${number}, Option is ${option}, chooseOption(${op[number]})`);
-            return <button className='button' onClick={() => chooseOption(op[number])}>{option}</button>
+            return <button className={optionSelected===number ? 'selected' : ''} onClick={() => chooseOption(op[number])}>{option}</button>
         });
         return buttonGroup;
     };
@@ -87,3 +243,4 @@ function Quiz() {
 }
 
 export default Quiz;
+*/
