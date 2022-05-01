@@ -51,6 +51,20 @@
   color: white;
 }
 
+.score {
+  font-size: 42px;
+  font-weight: bolder;
+  text-align: center;
+  color: rgb(178, 229, 231);
+}
+
+.headingEndScreen {
+  font-size: 28px;
+  font-weight: bolder;
+  text-align: center;
+  color: white;
+}
+
 .flex {
   display: flex;
   justify-content: center;

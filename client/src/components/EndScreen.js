@@ -13,8 +13,8 @@ function EndScreen() {
 
     return (
         <div className='Menu flex'>
-            <h1>Quiz finished. Well played!</h1>
-            <h3> {score} / {Questions.length} {" "}</h3>
+            <h1 className='headingEndScreen'>Quiz finished. Well played!</h1>
+            <h3 className='score'> {score} / {Questions.length} {" "}</h3>
             <button onClick={restartQuiz}> Restart Quiz </button>
         </div>
     )
