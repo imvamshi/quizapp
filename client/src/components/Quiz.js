@@ -2,6 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { QuizContext } from "../Helpers/Contexts";
 import { Questions } from "../Helpers/QuestionBank";
 import { Statistic, Row, Col } from "antd";
+import { addLog } from "../services/logServices";
+var axios = require('axios');
 
 const Options = (props) => {
     const { Questions, chooseOption, optionSelected, currQuestion, quizData } = props;
@@ -50,9 +52,12 @@ function Quiz() {
     };
 
     const checkAnswerAndIncrementScore = () => {
-        if (optionSelected == quizData.qbank.answer[currQuestion]) {
-            setScore(score + 1);
-        }
+        return new Promise((res, rej) => {
+            if (optionSelected == quizData.qbank.answer[currQuestion]) {
+                setScore(score + 1);
+            }
+            res();
+        })
     }
 
     const nextQuestion = () => {
@@ -69,9 +74,51 @@ function Quiz() {
         setCurrQuestion(currQuestion + 1);
     };
 
+    const logUserScore = () => {
+        return new Promise(async (res, rej) => {
+            const _score = `${score} / ${quizData.qbank.question.length}`;
+            let _percent = ((score/quizData.qbank.question.length) * 100).toFixed(2);
+            _percent = _percent.toString();
+            const dat = new Date().toString();
+            const _logstring = `Logging: score ${_score}
+            % Correct: ${_percent}`;
+            console.log(`_logstring = ${_logstring}`);
+
+            res();
+            
+            // const requestBody = { log: `${_logstring}`, username: 'testttuser' };
+            // var data = JSON.stringify(requestBody);
+            
+            // var config = {
+            //     method: 'post',
+            //     url: 'http://localhost:8080/api/logs',
+            //     headers: { 
+            //         'Content-Type': 'application/json'
+            //     },
+            //     data : data
+            // };
+            
+
+            // axios(config)
+            //     .then(function (response) {
+            //         console.log(JSON.stringify(response.data));
+            //         res();
+            //     })
+            //     .catch(function (error) {
+            //          console.log(error);
+            //          res();
+            // });
+
+
+        })
+    }
+
     const finishQuiz = () => {
-        checkAnswerAndIncrementScore();
-        setGameState("endScreen");
+        checkAnswerAndIncrementScore().then((res, rej) => {
+            logUserScore().then(setGameState("endScreen"))
+        })
+        
+        // setGameState("endScreen");
     };
 
     const { Countdown } = Statistic;
@@ -79,7 +126,8 @@ function Quiz() {
 
     const onFinish = () => {
         console.log("Timer finished! in <Quiz />");
-        setGameState("endScreen");
+        logUserScore().then(setGameState("endScreen"));
+        // setGameState("endScreen");
     };
 
     const getTimerValue = () => {

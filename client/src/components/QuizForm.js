@@ -6,6 +6,10 @@ import { UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { GetFileContents } from '../services/quizFileService';
 
+import { addLog } from '../services/logServices';
+
+import axios from "axios";
+
 
 const QuizForm = (props) => {
 
@@ -14,11 +18,11 @@ const QuizForm = (props) => {
   const { quizData, setQuizData } = props;
 
   const onChange = (value) => {
-    setQuizData({...quizData, 'timer': value});
+    setQuizData({ ...quizData, 'timer': value });
     console.log('changed quiz timer', value);
   }
   const onChangeNoOfQuestions = (value) => {
-    setQuizData({...quizData, 'noq': value});
+    setQuizData({ ...quizData, 'noq': value });
     console.log('changed Question count', value);
     console.log(`quizData after incrementing Question count ${JSON.stringify(quizData)}`);
 
@@ -43,6 +47,7 @@ const QuizForm = (props) => {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
+
     beforeUpload: (file) => {
       const reader = new FileReader();
 
@@ -73,12 +78,84 @@ const QuizForm = (props) => {
     navigate(path);
   }
 
-
-
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-    routeChange("/quiz");
+
+    if(Object.keys(values).length > 0) {
+      console.log('there are values');
+      setQuizData({ ...quizData, username: values.username, timer: values.timer, noq: values.noq });
+      routeChange("/quiz");
+    } else {
+      console.log('no values');
+    }
+
+    //onClick={() => onFinish()}>
   };
+
+  const dothis = async () => {
+    /* Trigger backend API to store quiz results in database */
+
+    // axios.get("http://localhost:8080/", { crossdomain: true }).then(response => {
+    //   setText(response.data.text);
+    //   setAuthor(response.data.author);
+    // });
+
+    // var config = {
+    //   method: 'get',
+    //   url: 'http://quiz-raghu.herokuapp.com/api/tasks',
+    //   headers: {}
+    // };
+    // var config2 = {
+    //   method: 'post',
+    //   url: 'http://localhost:8080/api/logs',
+    //   headers: {},
+    //   body: {
+    //     log: `log---`, username: 'testttuser' 
+    //   }
+    // };
+
+    // axios(config)
+    //   .then(function (response) {
+    //     console.log(JSON.stringify(response.data));
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+    //   console.log(config2);
+    //   axios(config2)
+    //   .then(function (response) {
+    //     console.log("config2 response below");
+    //     console.log(JSON.stringify(response.data));
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+    // var axios = require('axios');
+    // var data = JSON.stringify({
+    //   "log": "log---",
+    //   "username": "testttuser"
+    // });
+    
+    // var config = {
+    //   method: 'post',
+    //   url: 'http://localhost:8080/api/logs',
+    //   headers: { 
+    //     'Content-Type': 'application/json'
+    //   },
+    //   data : data
+    // };
+    
+    // axios(config)
+    // .then(function (response) {
+    //   console.log(JSON.stringify(response.data));
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
+ 
+
+  };
+
 
 
   return (
@@ -119,7 +196,7 @@ const QuizForm = (props) => {
           <InputNumber
             min={1}
             max={1000}
-            
+
             onChange={onChange}
             addonAfter="Timer (Seconds)"
             className="login-form-button" />
@@ -143,7 +220,6 @@ const QuizForm = (props) => {
           <InputNumber
             min={1}
             max={1000}
-            defaultValue={1}
             onChange={onChangeNoOfQuestions}
             addonAfter="No. of questions"
             className="login-form-button" />
@@ -163,7 +239,7 @@ const QuizForm = (props) => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-form-button"
-            onClick={() => onFinish()}>
+            >
             Start Quiz
           </Button>
         </Form.Item>
