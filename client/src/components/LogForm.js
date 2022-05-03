@@ -37,7 +37,7 @@ function onChange(value) {
 const NormalLoginForm = () => {
     const onFinish = async (values) => {
         console.log('Received values of form: ', values);
-        const username = values.username;
+        const username = values.username.toLowerCase();
         const resp = await getLogs();
         console.log(JSON.stringify(resp.data));
         let _logs = '';

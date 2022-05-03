@@ -19,7 +19,7 @@ function EndScreen() {
         % Correct: ${_percent}`;
 
         var axios = require('axios');
-        const requestBody = { log: `${_logstring}`, username: quizData.username };
+        const requestBody = { log: `${_logstring}`, username: quizData.username.toLowerCase() };
         var data = JSON.stringify(requestBody);
 
         var config = {
